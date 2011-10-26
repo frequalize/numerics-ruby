@@ -10,12 +10,14 @@ module Fz
       PORT = '9000'
       BASE_PATH = '/ts'
 
+      attr_reader :access_key, :secret_key
+
       def initialize(access_key, secret_key)
         @access_key, @secret_key = access_key, secret_key
       end
 
-      def client
-        @client ||= Net::HTTP.new(HOST, PORT)
+      def to_s
+        "#<Fz::Numerics::Connection @access_key=#{@access_key}>"
       end
 
       ## Start Commands ##
@@ -101,6 +103,12 @@ module Fz
       end
 
       ## End Commands
+
+      protected
+
+      def client
+        @client ||= Net::HTTP.new(HOST, PORT)
+      end
 
       def get(timeseries, command, query=nil)
         path = [BASE_PATH, *timeseries, command].join('/')
