@@ -6,7 +6,7 @@ require 'fz/numerics'
 class ConnectionTest < Test::Unit::TestCase
 
   def conn
-    @conn ||= Fz::Numerics.connect('master_empty', '5ekR1Tt')
+    @conn ||= Fz::Numerics.connect(:access_key => 'master_empty', :secret_key => '5ekR1Tt')
   end
 
   def test_001_meta

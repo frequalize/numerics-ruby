@@ -1,4 +1,4 @@
-require 'net/http' #'net/https'
+require 'net/https'
 require 'cgi'
 require 'yajl'
 
@@ -107,7 +107,12 @@ module Fz
       protected
 
       def client
-        @client ||= Net::HTTP.new(HOST, PORT)
+        if !@client
+          @client = Net::HTTP.new(HOST, PORT)
+          @client.use_ssl = true
+          @client.verify_mode = OpenSSL::SSL::VERIFY_NONE ##@@remove me after alpha!         
+        end
+        @client
       end
 
       def get(timeseries, command, query=nil)
