@@ -5,6 +5,8 @@ require 'fz/numerics/connection'
 
 module Fz
   module Numerics
+
+    VERSION = '0.2'
     
     def self.connect(arg, env=nil)
       config = if arg.is_a?(Hash)
@@ -32,12 +34,14 @@ module Fz
 
       access_key = config[:access_key] || config['access_key']
       secret_key = config[:secret_key] || config['secret_key']
+      host = config[:host] || config['host'] # nil means use the default
+      port = config[:port] || config['port'] # nil means use the default
 
       if !access_key && !secret_key
         raise ArgumentError, 'Fz::Numerics.connect(config_file, env=nil) or Fz::Numerics.connect(:access_key => access_key, :secret_key => :secret_key)'
       end
 
-      Fz::Numerics::Connection.new(access_key.to_s, secret_key.to_s)
+      Fz::Numerics::Connection.new(access_key, secret_key, host, port)
     end
 
   end

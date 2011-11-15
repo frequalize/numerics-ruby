@@ -6,14 +6,16 @@ module Fz
   module Numerics
     class Connection
 
-      HOST = '127.0.0.1'
-      PORT = '9000'
+      HOST = 'api.numerics.io'
+      PORT = '443'
       BASE_PATH = '/ts'
 
       attr_reader :access_key, :secret_key
 
-      def initialize(access_key, secret_key)
-        @access_key, @secret_key = access_key, secret_key
+      def initialize(access_key, secret_key, host=nil, port=nil)
+        @access_key, @secret_key = access_key.to_s, secret_key.to_s
+        @host = (host || HOST).to_s
+        @port = (port || PORT).to_s
       end
 
       def to_s
@@ -108,7 +110,7 @@ module Fz
 
       def client
         if !@client
-          @client = Net::HTTP.new(HOST, PORT)
+          @client = Net::HTTP.new(@host, @port)
           @client.use_ssl = true
           @client.verify_mode = OpenSSL::SSL::VERIFY_NONE ##@@remove me after alpha!         
         end
