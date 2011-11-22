@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+tests = [
+         'auth',
+         'connection',
+         'global_connection'
+         ]
+
+tests.each do |t|
+  require "./test/#{t}_test"
+end

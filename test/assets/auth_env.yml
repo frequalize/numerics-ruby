@@ -5,3 +5,4 @@ production:
 development:
   access_key: foo
   secret_key: foobar
+  disabled: true

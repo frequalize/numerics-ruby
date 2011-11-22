@@ -6,10 +6,19 @@ require 'time'
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'numerics'
 
-class ConnectionTest < Test::Unit::TestCase
+class GlobalConnectionTest < Test::Unit::TestCase
 
   def conn
-    @conn ||= Numerics.connect(:access_key => 'master_empty', :secret_key => '5ekR1Tt', :host => '127.0.0.1', :port => 9000)
+    Numerics
+  end
+
+  def test_000_init
+    assert !Numerics.respond_to?(:insert)
+    assert_raises NoMethodError do
+      Numerics.insert
+    end
+    assert Numerics.config(:access_key => 'master_empty', :secret_key => '5ekR1Tt', :host => '127.0.0.1', :port => 9000)
+    assert Numerics.respond_to?(:insert)
   end
 
   def test_001_meta
@@ -109,23 +118,7 @@ class ConnectionTest < Test::Unit::TestCase
     assert_equal [[(tw - (86400 * 7)).strftime("%Y-%m-%d %H:%M:%S %z"), 0, {}], [tw.strftime("%Y-%m-%d %H:%M:%S %z"), 9, {}]], conn.entries(['coffees', 'total', 'w'], :pad => true, :limit => 2)[:data]
   end
 
-  def test_005_disabling
-    assert conn.enabled?
-    conn.disable!
-    assert conn.disabled?
-    assert_equal( {
-                    :disabled => true
-                  }, conn.list )
-    conn.enable!
-    assert conn.enabled?
-    assert_equal( {
-                    :success => true,
-                    :data => ['coffees']
-                  }, conn.list )
-
-  end
-
-  def test_006_cleanup
+  def test_005_cleanup
     conn.erase('coffees')
   end
 
