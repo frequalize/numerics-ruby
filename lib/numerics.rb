@@ -8,7 +8,7 @@ require 'numerics/connection'
 
 module Numerics
 
-  VERSION = '0.2.3'
+  VERSION = '0.2.4'
   
   def self.connect(arg, env=nil)
     config = if arg.is_a?(Hash)

@@ -85,6 +85,10 @@ module Numerics
       self.get(timeseries, 'stats')
     end
 
+    def stats_per(timeseries, query)
+      self.get(timeseries, 'stats_per', query)
+    end
+
     def distribution(timeseries, width=nil, start=nil)
       query =  if width || start
                  {:w => width, :s => start}

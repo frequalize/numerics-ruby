@@ -99,7 +99,14 @@ class ConnectionTest < Test::Unit::TestCase
                     'analysis' => 'slr'
                   }, conn.trend(['coffees', 'total/2s'], :limit => 4)[:data])
 
-    #puts conn.get 'coffees', 'entries', {:end => -1}
+
+    assert_equal 1, conn.entries(['coffees', 'some='])[:data].size
+    assert_equal 1, conn.entries(['coffees', 'some=val'])[:data].size
+    assert_equal 0, conn.entries(['coffees', 'some=val2'])[:data].size
+    assert_equal 0, conn.entries(['coffees', 'blah='])[:data].size
+    assert_equal( {"total" => 9, "count" => 1, "mean" => 9}, conn.stats_per('coffees', :p => 'some')[:data])
+    assert_equal( {"total" => 9, "count" => 0, "mean" => nil}, conn.stats_per('coffees', :p => 'blah')[:data])
+
   end
 
   def test_004_derive
