@@ -104,8 +104,23 @@ class ConnectionTest < Test::Unit::TestCase
     assert_equal 1, conn.entries(['coffees', 'some=val'])[:data].size
     assert_equal 0, conn.entries(['coffees', 'some=val2'])[:data].size
     assert_equal 0, conn.entries(['coffees', 'blah='])[:data].size
-    assert_equal( {"total" => 9, "count" => 1, "mean" => 9}, conn.stats_per('coffees', :p => 'some')[:data])
-    assert_equal( {"total" => 9, "count" => 0, "mean" => nil}, conn.stats_per('coffees', :p => 'blah')[:data])
+
+    assert_equal( {"total" => 9, "count" => 1, "mean" => 9}, conn.stats_per('coffees', 'some')[:data])
+    assert_equal( {"total" => 9, "count" => 0, "mean" => nil}, conn.stats_per('coffees', 'blah')[:data])
+
+    assert_equal({
+                   'total' => 9,
+                   'count' => 3,
+                   'mean' => 3.0,
+                   #'min' => 3,
+                   #'max' => 4,
+                   #'median' => 3.5,
+                   #'mode' => nil,
+                   'zeros' => 0
+                 }, conn.stats_without_zeros('coffees')[:data])
+
+    assert_equal 1, conn.tally_of('coffees', 2)[:data]
+    #assert_equal 0, conn.tally_of('coffees', 0.0)[:data] ##@@ fix
 
   end
 

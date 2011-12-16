@@ -85,8 +85,16 @@ module Numerics
       self.get(timeseries, 'stats')
     end
 
-    def stats_per(timeseries, query)
-      self.get(timeseries, 'stats_per', query)
+    def stats_per(timeseries, property_name)
+      self.get(timeseries, 'stats_per', :p => property_name)
+    end
+
+    def stats_without_zeros(timeseries)
+      self.get(timeseries, 'stats_without_zeros')
+    end
+
+    def tally_of(timeseries, val)
+      self.get(timeseries, 'tally_of', :v => val)
     end
 
     def distribution(timeseries, width=nil, start=nil)
