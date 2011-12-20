@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+
+require 'yajl'
+
+branches = ['trunk', 'release', 'new_feature'] 
+
+def output(data)
+  puts Yajl::Encoder.encode(data)
+end
+
+def output_measurement(time, branch, test_count, failing_count, code_coverage_percent)
+  passing_count = test_count - failing_count
+  fail_percent = ((failing_count.to_f / test_count) * 10000).to_i.to_f / 100
+  code_coverage_percent = (code_coverage_percent * 100).to_i.to_f / 100
+  output([{
+     "test_count_#{branch}" => test_count,
+     "passing_count_#{branch}" => passing_count,
+     "failing_count_#{branch}" => failing_count,
+     "fail_percent_#{branch}" => fail_percent,
+     "code_coverage_percent_#{branch}" => code_coverage_percent
+   }, time, {}])
+end
+
+def random_fail_count(total)
+  fail_count = 0
+  if Kernel.rand(10) > 6
+    fail_count = Kernel.rand((total.to_f / 3).to_i)
+  end
+  fail_count
+end
+
+def change_test_count(count)
+  if Kernel.rand(10) > 7
+    count - (count * (Kernel.rand(1).to_f / 100)).to_i
+  else
+    count + Kernel.rand(3)
+  end
+end
+
+def change_coverage(coverage)
+  if Kernel.rand(10) > 6
+    coverage - ( (Kernel.rand(5).to_f / 100) * coverage)
+  else
+    coverage + ( (Kernel.rand(5).to_f / 100) * (100 - coverage))
+  end
+end
+
+def next_event_time(time)
+  next_time = time + 1500 + Kernel.rand(3000)
+  if next_time.hour < 8
+    if Kernel.rand(10) != 1 ## less change of work in the middle of the night
+      next_time = next_event_time(next_time)
+    end
+  end
+  next_time
+end
+
+branches.each do |branch| 
+  output(['create', ["test_count_#{branch}", 0], ["passing_count_#{branch}", 0], ["failing_count_#{branch}", 0], "fail_percent_#{branch}", "code_coverage_percent_#{branch}"])
+
+  event_time = Time.now - (86400 * 30)
+  test_count = 200
+  failing_count = random_fail_count(test_count)
+  code_coverage_percent = 70.0
+
+  while event_time < Time.now
+    test_count = change_test_count(test_count)
+    failing_count = random_fail_count(test_count)
+    code_coverage_percent = change_coverage(code_coverage_percent) 
+
+    output_measurement(event_time, branch, test_count, failing_count, code_coverage_percent)
+    event_time = next_event_time(event_time)
+  end
+
+end

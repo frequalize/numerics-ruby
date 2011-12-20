@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'date'
+require 'time'
+
+require 'yaml'
+require 'numerics'
+local = {:access_key => "EDYUCFLJHGODCBRFBHHWAGES", :secret_key => "CUFMZISBIKKTAMQSWLSEBLJSDRPKQKLVBOWG",:host => "127.0.0.1", :port => 9000}
+remote = { :access_key => 'AMJHUBGGINARXIZBHMXCTNEK',  :secret_key => 'PTHMBFEJUGFKTGGGJHQXNEFNQAXCMJRCDALS' }
+
+Numerics.config remote
+
+def handle_line(parsed_line)
+  if parsed_line[0].is_a?(Hash)
+    vars = parsed_line[0]
+    time = Time.parse(parsed_line[1])
+    props = parsed_line[2]
+    vars.each do |var, val|
+      Numerics.insert(var, val, time, props)
+    end
+  else
+    command = parsed_line.shift
+    parsed_line.each do |args|
+      Numerics.send(command, *args)
+    end
+  end
+end
+
+def load_file(file_name)
+  File.open(file_name) do |f|
+    while line = f.gets
+      parsed_line = Yajl::Parser.parse(line)
+      handle_line(parsed_line)
+    end
+  end
+end
+
+data_file = ARGV.shift
+if data_file
+  load_file(data_file)
+else
+  $stderr.puts "No data file given"
+  exit(1)
+end
