@@ -19,20 +19,20 @@ See also numerics-node and numerics-cli.
     Numerics.config File.join(Rails.root, 'config', 'numerics.yml'), Rails.env	#see sample config file @@todo
 
     #list of variables in project
-    Numerics.list # => []
+    Numerics.list # => {:success => true, :data => []}
 
     # start taking measurements
-    Numerics.insert('invites_sent', 3, Time.now, {user_id => 1234}) # => { 'insertions' => 1, 'removals' => 0, 'number' => 1, 'stamp' => '1.0' }
-    Numerics.list # => ['invites_sent']
-    Numerics.stats('invites_sent') # => {'total' => 3, 'count' => 1, 'mean' => 3.0, 'min' => 3, 'max' => 3, 'median' => 3, 'mode' => 3}
+    Numerics.insert('invites_sent', 3, Time.now, {user_id => 1234}) # => {:success => true, :data => { 'insertions' => 1, 'removals' => 0, 'number' => 1, 'stamp' => '1.0' }}
+    Numerics.list # => {:success => true, :data => ['invites_sent']}
+    Numerics.stats('invites_sent') # => {:success => true, :data => {'total' => 3, 'count' => 1, 'mean' => 3.0, 'min' => 3, 'max' => 3, 'median' => 3, 'mode' => 3}}
 
     # or multiple project-specific connections
     project1_client = Numerics.connect(:access_key => 'project1_access_key', :secret_key => 'project1_secret_key')
-    project1_client.list # => []
+    project1_client.list # => {:success => true, :data => []}
     project1_client.insert('invites_sent', 3, Time.now, {user_id => 1234})
  
-    project2_client = Numerics.connect('project2_access_key', 'project2_secret_key')
-    project1_client.list # => []
+    project2_client = Numerics.connect(:access_key => 'project2_access_key', :secret_key => 'project2_secret_key')
+    project1_client.list # => {:success => true, :data => []}
     # ...
 
 
