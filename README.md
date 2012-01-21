@@ -1,6 +1,6 @@
 # numerics.io API client for Ruby
 
-A Ruby client for the (numerics.io)[https://numerics.io/] metrics API. (The API service is currently in private alpha.)
+A Ruby client for the [numerics.io](https://numerics.io/) metrics API. (The API service is currently in private alpha.)
 
 See also numerics-node and numerics-cli.
 
